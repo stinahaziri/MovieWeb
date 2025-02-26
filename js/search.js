@@ -1,96 +1,47 @@
 const api_key = "api_key=0051e0d8c6fdd225acf8de23a5f98a8c";
 const baseUrl = "https://api.themoviedb.org/3/";
-const apiUrl = baseUrl + "/discover/movie?sort_by=popularity.desc&" + api_key;
 const imgUrl = "https://image.tmdb.org/t/p/w500";
 
-const searchUrl = baseUrl + '/search/movie?' + api_key;
-const formm = document.querySelector(".search-form");
+const apiUrl = `${baseUrl}discover/movie?sort_by=popularity.desc&${api_key}`;
+const showUrl = `${baseUrl}tv/popular?${api_key}&language=en-US&page=1`;
+const searchUrl = `${baseUrl}search/movie?${api_key}`;
+const searchUrlTv = `${baseUrl}search/tv?${api_key}`;
+
+const btnMovie = document.getElementById("movie");
+const btnShow = document.getElementById("tv");
 const search = document.getElementById("search-term");
-const contanier = document.getElementById("search-results");
+const formm = document.querySelector(".search-form");
+const container = document.getElementById("popular-movies");
 
-getMovies(apiUrl);
-
+// Fme i amrr filmat ose shfaqjet
 function getMovies(url) {
   fetch(url)
-    .then((response) => response.json())
+    .then((res) => res.json())
     .then((data) => {
-      console.log(data.results);
-      showMovies(data.results);
+      container.innerHTML = data.results.map(item => `
+        <div class="movies">
+          <img src="${imgUrl + item.poster_path}" alt="${item.title || item.name}">
+          <h3>${item.title || item.name}</h3>
+          <span>${item.vote_average}</span>
+        </div>
+      `).join("");
     });
 }
 
-function showMovies(data) {
-  contanier.innerHTML = "";
-
-  data.forEach((movie) => {
-    const { id, title, vote_average, poster_path, overview, release_date } = movie;
-    let movieCard = document.createElement("div");
-
-    movieCard.classList.add("card");
-    movieCard.innerHTML = `
-      <a href="movie-details.html?id=${id}">
-        <img src="${imgUrl + poster_path}" class="card-img-top" alt="${title}" />
-      </a>
-      <div class="card-body">
-        <h5 class="card-title">${title}</h5>
-        <p class="card-text">
-          ${overview}
-          <small class="text-muted">Release: ${release_date}</small>
-        </p>
-      </div>
-    `;
-
-    contanier.appendChild(movieCard);
-  });
-}
-
-function filterFunction(e) {
+// kerkimi
+formm.addEventListener("submit", (e) => {
   e.preventDefault();
   const searchTerm = search.value.trim();
+  const url = searchTerm ? 
+    (btnMovie.checked ? `${searchUrl}&query=${searchTerm}` : `${searchUrlTv}&query=${searchTerm}`) :
+    (btnMovie.checked ? apiUrl : showUrl);
+  getMovies(url);
+  search.value = "";
+});
 
-  if (searchTerm) {
-    getMovies(searchUrl + '&query=' + searchTerm);
-  
-  } else {
-    getMovies(apiUrl);
-  }
-  
-  search.value = '';
-}
+// Ndneyshimi mes filamv edge tv showit
+btnMovie.addEventListener("change", () => getMovies(apiUrl));
+btnShow.addEventListener("change", () => getMovies(showUrl));
 
-
-formm.addEventListener("submit", filterFunction)
-
-
-const btnShow = document.getElementById('tv');
-let form = document.getElementById("movie");
-
-const btn = document.querySelector('#movie');
-
-function btnFunction() {
-  if (btn.checked) {
-    let apiUrl = baseUrl + "/discover/movie?sort_by-popularity.desc&" + api_key; // Replace with the actual API URL
-    getMovies(apiUrl);
-  } else {
-    // alert("No movies selected");
-  }
-  
-  search.value = '';
-}
-btn.addEventListener("click", btnFunction);
-
-
-
-
-function showFunction() {
-  if (btnShow.checked) {
-    const showUrl = "https://api.themoviedb.org/3/tv/popular?api_key=0051e0d8c6fdd225acf8de23a5f98a8c&language=en-US&page=1";
-    getMovies(showUrl);
-    
-  } else {
-    // alert("No movies selected");
-  }
-  
-  search.value = '';
-}
-btnShow.addEventListener("click", showFunction);
+// Ngarkon fillimisht filma
+getMovies(apiUrl);

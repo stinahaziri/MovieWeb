@@ -3,7 +3,7 @@ const state = {
     currentPage: window.location.pathname,
 };
 
-//highlight actve link
+//linku aktiv
 function highlightActiveLink() {
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
@@ -13,8 +13,8 @@ function highlightActiveLink() {
     })
 }
 
-//display popular movies
-//fetch data from TMDB API
+//me i qit popular movies
+//fetch data prej  API
 async function fetchAPIData(endpoint) {
     const API_KEY = '0051e0d8c6fdd225acf8de23a5f98a8c';
     const API_URL = 'https://api.themoviedb.org/3/';

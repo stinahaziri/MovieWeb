@@ -41,7 +41,7 @@ btnMovie.addEventListener("change", () => getMovies(apiUrl));
 btnShow.addEventListener("change", () => getMovies(showUrl));
 
 
-// Event për kërkimin e filmave ose shfaqjeve
+// kerkimi 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const searchTerm = searchInput.value.trim();
